@@ -1,0 +1,275 @@
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Random;
+import java.util.Arrays;
+
+public class Main
+{
+    public static void main(String args[])
+    {
+        System.out.println("\nLab31 100 Point Version\n");
+        MyList list1 = new MyStack(100);
+        MyList list2 = new MyQueue(100);
+        MyList list3 = new MySet(100);
+        MyList list4 = new MyOrdList(100);
+        Random rnd = new Random(12345);
+        for (int k = 1; k <= 20; k++)
+        {
+            int rndInt = rnd.nextInt(20) + 10;
+            addData(list1,rndInt);
+            addData(list2,rndInt);
+            addData(list3,rndInt);
+            addData(list4,rndInt);
+        }
+        showData(list1,list2);
+        showData(list3,list4);
+        System.out.println();
+
+        for (int k = 1; k <= 5; k++)
+        {
+            removeData(list1);
+            removeData(list2);
+            removeData(list3);
+            removeData(list4);
+        }
+        showData(list1,list2);
+        showData(list3,list4);
+        System.out.println();
+    }
+    public static void addData(MyList list, int n){
+        list.add(n);
+    }
+    public static void removeData(MyList list){
+        int x = list.remove();
+    }
+    public static void showData(MyList list1, MyList list2){
+        System.out.print("[");
+        for (int i=0; i<list1.getSize()-1; i++)
+        System.out.print(list1.getArray()[i]+",");
+        System.out.println(list1.getArray()[list1.getSize()-1] +"]");
+
+        System.out.print("[");
+        for (int i=0; i<list2.getSize()-1; i++)
+            System.out.print(list2.getArray()[i]+",");
+        System.out.println(list2.getArray()[list2.getSize()-1] + "]");
+    }
+}
+
+abstract interface MyList
+{
+    public abstract void add(int x);
+
+    public abstract int remove();
+
+    public abstract boolean isEmpty();
+
+    public abstract int getSize();
+
+    public abstract int[] getArray();
+}
+
+class MyStack implements MyList
+{
+    private int size=0;
+    private int[] array;
+
+    public MyStack(int capacity){
+        array = new int[capacity];
+    }
+
+    @Override
+    public void add(int x) {
+        int[] temp = new int[size+1];
+        temp[0] = x;
+        for(int i = 1; i<temp.length; i++){
+            temp[i]=array[i-1];
+        }
+        for(int i = 0; i<temp.length; i++){
+            array[i]=temp[i];
+        }
+        size++;
+    }
+
+    @Override
+    public int remove() {
+        int last = array[size-1];
+        int remove = array[0];
+        int temp = array[1];
+        for (int i = 0; i<size-2; i++){
+            array[i] = temp;
+            temp = array[i+2];
+        }
+        array[size-2] = last;
+        array[size-1] = 0;
+        size--;
+        return remove;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        if (size==0){ return true; }
+        return false;
+    }
+
+    @Override
+    public int getSize() {
+        return size;
+    }
+
+    @Override
+    public int[] getArray() {
+        return array;
+    }
+}
+
+class MyQueue implements MyList
+{
+    private int size=0;
+    private int[] array;
+
+    public MyQueue(int capacity){
+        array = new int[capacity];
+    }
+
+    @Override
+    public void add(int x) {
+        array[size]=x;
+        size++;
+    }
+
+    @Override
+    public int remove() {
+        int last = array[size-1];
+        int remove = array[0];
+        int temp = array[1];
+        for (int i = 0; i<size-2; i++){
+            array[i] = temp;
+            temp = array[i+2];
+        }
+        array[size-2] = last;
+        array[size-1] = 0;
+        size--;
+        return remove;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        if (size==0){ return true; }
+        return false;
+    }
+
+    @Override
+    public int getSize() {
+        return size;
+    }
+
+    @Override
+    public int[] getArray() {
+        return array;
+    }
+}
+
+class MySet implements MyList
+{
+    private int size=0;
+    private int[] array;
+
+    public MySet(int capacity){
+        array = new int[capacity];
+    }
+
+    @Override
+    public void add(int x) {
+        boolean exists = false;
+        for (int i=0; i<size; i++){
+            if (x == array[i]) exists = true;
+        }
+        if (!exists) {
+            array[size] = x;
+            size++;
+        }
+    }
+
+    @Override
+    public int remove() {
+        int last = array[size-1];
+        int remove = array[0];
+        int temp = array[1];
+        for (int i = 0; i<size-2; i++){
+            array[i] = temp;
+            temp = array[i+2];
+        }
+        array[size-2] = last;
+        array[size-1] = 0;
+        size--;
+        return remove;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        if (size==0){ return true; }
+        return false;
+    }
+
+    @Override
+    public int getSize() {
+        return size;
+    }
+
+    @Override
+    public int[] getArray() {
+        return array;
+    }
+}
+
+class MyOrdList implements MyList
+{
+    private int size=0;
+    private int[] array;
+    private ArrayList<Integer> temp = new ArrayList<>();
+
+    public MyOrdList(int capacity){
+        array = new int[capacity];
+    }
+
+    @Override
+    public void add(int x) {
+        temp.add(x);
+        Collections.sort(temp);
+        for (int i=0; i<=size; i++){
+            array[i] = temp.get(i);
+        }
+        size++;
+    }
+
+    @Override
+    public int remove() {
+        int last = array[size-1];
+        int remove = array[0];
+        int temp = array[1];
+        for (int i = 0; i<size-2; i++){
+            array[i] = temp;
+            temp = array[i+2];
+        }
+        array[size-2] = last;
+        array[size-1] = 0;
+        size--;
+        return remove;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        if (size==0){ return true; }
+        return false;
+    }
+
+    @Override
+    public int getSize() {
+        return size;
+    }
+
+    @Override
+    public int[] getArray() {
+        return array;
+    }
+}
